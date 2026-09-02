@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
+import { FloatingWhatsApp } from './components/common/FloatingWhatsApp';
 import { PolicyModal } from './components/common/PolicyModal';
 import { AuthModal } from './components/customer/AuthModal';
 import { CartDrawer } from './components/cart/CartDrawer';
@@ -163,6 +164,9 @@ const MainContent: React.FC = () => {
         type={activePolicy}
         onClose={() => setActivePolicy(null)}
       />
+
+      {/* Floating WhatsApp Chat & Order Button */}
+      <FloatingWhatsApp />
     </div>
   );
 };

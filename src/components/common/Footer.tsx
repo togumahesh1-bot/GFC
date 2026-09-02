@@ -134,7 +134,7 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentView, onOpenAuth }) =>
                 <div className="flex items-center gap-2.5">
                   <Phone className="w-4 h-4 text-amber-400 shrink-0" />
                   <a href={`tel:${RESTAURANT_INFO.phone}`} className="text-white hover:text-amber-400 font-medium">
-                    {RESTAURANT_INFO.phone}
+                    Call: {RESTAURANT_INFO.phone}
                   </a>
                 </div>
 
@@ -146,7 +146,7 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentView, onOpenAuth }) =>
                     rel="noreferrer"
                     className="text-emerald-400 hover:text-emerald-300 font-semibold"
                   >
-                    WhatsApp Quick Order
+                    WhatsApp: +91 63724 81457
                   </a>
                 </div>
 

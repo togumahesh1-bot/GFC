@@ -425,16 +425,16 @@ export const HomePage: React.FC<HomePageProps> = ({
               className="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
             >
               <PhoneCall className="w-3.5 h-3.5 text-amber-400" />
-              <span>Call Us</span>
+              <span>Call ({RESTAURANT_INFO.phone})</span>
             </a>
             <a
-              href={`https://wa.me/${RESTAURANT_INFO.whatsapp}`}
+              href={`https://wa.me/${RESTAURANT_INFO.whatsapp}?text=Hello%20Gangamma%20Fast%20Food%2C%20I%20want%20to%20order%20food!`}
               target="_blank"
               rel="noreferrer"
               className="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-black font-extrabold text-xs flex items-center justify-center gap-1.5 transition-colors"
             >
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>WhatsApp</span>
+              <span>WhatsApp (6372481457)</span>
             </a>
           </div>
         </div>

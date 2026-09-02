@@ -13,6 +13,7 @@ import {
   Clock,
   LogOut,
   ChevronDown,
+  MessageCircle,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
@@ -93,6 +94,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <PhoneCall className="w-3 h-3 text-amber-200" />
               <span>{RESTAURANT_INFO.phone}</span>
+            </a>
+
+            <a
+              href={`https://wa.me/${RESTAURANT_INFO.whatsapp}?text=Hello%20Gangamma%20Fast%20Food%2C%20I%20want%20to%20place%20an%20order`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-full shadow transition-colors"
+              title="Chat & Order on WhatsApp: +91 63724 81457"
+            >
+              <MessageCircle className="w-3 h-3" />
+              <span>WhatsApp</span>
             </a>
           </div>
         </div>
@@ -356,11 +368,21 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="pt-2 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
               <span className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                Hyderabad, Telangana
+                Hyderabad
               </span>
-              <a href={`tel:${RESTAURANT_INFO.phone}`} className="text-amber-400 font-semibold">
-                Call Restaurant
-              </a>
+              <div className="flex items-center gap-3">
+                <a href={`tel:${RESTAURANT_INFO.phone}`} className="text-amber-400 font-semibold flex items-center gap-1">
+                  <PhoneCall className="w-3 h-3" /> Call
+                </a>
+                <a
+                  href={`https://wa.me/${RESTAURANT_INFO.whatsapp}?text=Hello%20Gangamma%20Fast%20Food%2C%20I%20want%20to%20place%20an%20order`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 font-semibold flex items-center gap-1"
+                >
+                  <MessageCircle className="w-3 h-3" /> WhatsApp
+                </a>
+              </div>
             </div>
           </div>
         )}

@@ -76,7 +76,7 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ type, onClose }) => {
               </p>
               <p className="font-semibold text-white">2. Quality Guarantee & Replacements</p>
               <p>
-                If an item is missing, damaged, or does not meet our high culinary standards, please call us directly at <b>+91 98765 43210</b> or message our WhatsApp helpline within 30 minutes of delivery. We will promptly dispatch a fresh replacement or issue an instant store credit/refund.
+                If an item is missing, damaged, or does not meet our high culinary standards, please call us directly at <b>+91 63724 81457</b> or message our WhatsApp helpline at <a href="https://wa.me/916372481457" target="_blank" rel="noreferrer" className="text-emerald-400 font-semibold underline hover:text-emerald-300">+91 63724 81457</a> within 30 minutes of delivery. We will promptly dispatch a fresh replacement or issue an instant store credit/refund.
               </p>
               <p className="font-semibold text-white">3. Refund Processing</p>
               <p>
