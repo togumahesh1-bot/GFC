@@ -5,9 +5,13 @@ import {
   ShieldCheck, 
   Phone, 
   MessageCircle,
-  Award,
-  LogOut,
-  UserCheck
+  Award, 
+  LogOut, 
+  UserCheck,
+  RotateCcw,
+  HelpCircle,
+  Sparkles,
+  FileText
 } from 'lucide-react';
 import { useStudents } from '../../context/StudentContext';
 import { INSTITUTION_INFO } from '../../data/mockAcademicData';
@@ -36,6 +40,10 @@ export const Header: React.FC = () => {
             <span className="hidden sm:inline text-zinc-300">
               NSRIT Autonomous Nov/Dec 2025 Regular & Supplementary Examination Results
             </span>
+            <span className="text-zinc-500 hidden md:inline">•</span>
+            <span className="text-amber-400 text-[11px] font-semibold hidden md:inline">
+              Revaluation Open Till Feb 04, 2026
+            </span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
@@ -47,7 +55,7 @@ export const Header: React.FC = () => {
               <span>Helpline: {INSTITUTION_INFO.phone}</span>
             </a>
             <a 
-              href={`https://wa.me/${INSTITUTION_INFO.whatsapp}?text=Hello%20Exam%20Cell%2C%20I%20have%20an%20inquiry%20regarding%20Student%20Results`}
+              href={`https://wa.me/${INSTITUTION_INFO.whatsapp}?text=Hello%20Exam%20Cell%2C%20I%20have%20an%20inquiry%20regarding%20Student%20Results%20or%20Revaluation`}
               target="_blank" 
               rel="noreferrer" 
               className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-semibold transition-colors"
@@ -61,7 +69,7 @@ export const Header: React.FC = () => {
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        {/* Brand / Institution Info with NSRIT Crest */}
+        {/* Brand / Institution Info */}
         <div 
           onClick={() => setActiveView('search')}
           className="flex items-center gap-3 cursor-pointer group"
@@ -83,7 +91,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => setActiveView('search')}
-            className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeView === 'search' || activeView === 'marksheet'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                 : 'text-zinc-300 hover:bg-zinc-800/80 hover:text-white'
@@ -94,28 +102,56 @@ export const Header: React.FC = () => {
             <span className="md:hidden">Results</span>
           </button>
 
+          {/* Revaluation Tab */}
+          <button
+            onClick={() => setActiveView('revaluation')}
+            className={`px-3 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              activeView === 'revaluation'
+                ? 'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20'
+                : 'text-amber-300/90 hover:bg-amber-500/10 hover:text-amber-200'
+            }`}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Revaluation (RV/RC)</span>
+            <span className="md:hidden">Reval</span>
+          </button>
+
+          {/* Marks Clarification Tab */}
+          <button
+            onClick={() => setActiveView('clarification')}
+            className={`px-3 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              activeView === 'clarification'
+                ? 'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20'
+                : 'text-zinc-300 hover:bg-zinc-800/80 hover:text-white'
+            }`}
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden lg:inline">Clarify Marks</span>
+            <span className="lg:hidden">Clarify</span>
+          </button>
+
           <button
             onClick={() => setActiveView('directory')}
-            className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeView === 'directory'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                 : 'text-zinc-300 hover:bg-zinc-800/80 hover:text-white'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Students</span>
+            <span className="hidden lg:inline">Students</span>
           </button>
 
           <button
             onClick={() => setActiveView('analytics')}
-            className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeView === 'analytics'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                 : 'text-zinc-300 hover:bg-zinc-800/80 hover:text-white'
             }`}
           >
             <Award className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden md:inline">Toppers & Analytics</span>
+            <span className="hidden xl:inline">Toppers</span>
           </button>
 
           <button
@@ -123,7 +159,7 @@ export const Header: React.FC = () => {
               setIsAdminLoggedIn(!isAdminLoggedIn);
               setActiveView('admin');
             }}
-            className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
               activeView === 'admin'
                 ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-zinc-950 shadow-md shadow-amber-500/20'
                 : 'border border-amber-500/30 text-amber-400 hover:bg-amber-500/10'

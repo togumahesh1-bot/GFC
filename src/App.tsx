@@ -7,9 +7,19 @@ import { MarksheetView } from './components/result/MarksheetView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { StudentDirectory } from './components/directory/StudentDirectory';
 import { AnalyticsView } from './components/analytics/AnalyticsView';
+import { RevaluationPortal } from './components/revaluation/RevaluationPortal';
+import { MarksDoubtClarification } from './components/revaluation/MarksDoubtClarification';
 import { AcademicFooter } from './components/common/AcademicFooter';
 import { AcademicWhatsApp } from './components/common/AcademicWhatsApp';
-import { FileText, Search, Users, Award, ShieldCheck } from 'lucide-react';
+import { 
+  FileText, 
+  Search, 
+  Users, 
+  Award, 
+  RotateCcw, 
+  HelpCircle, 
+  Sparkles 
+} from 'lucide-react';
 
 const StudentWelcomeBanner: React.FC = () => {
   const { currentUser, activeView, setActiveView } = useStudents();
@@ -53,7 +63,7 @@ const StudentWelcomeBanner: React.FC = () => {
             onClick={() => setActiveView('marksheet')}
             className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
               activeView === 'marksheet'
-                ? 'bg-amber-500 text-zinc-950 font-bold'
+                ? 'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20'
                 : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
             }`}
           >
@@ -61,11 +71,37 @@ const StudentWelcomeBanner: React.FC = () => {
             <span>Marks Memo</span>
           </button>
 
+          {/* Revaluation Action Pill */}
+          <button
+            onClick={() => setActiveView('revaluation')}
+            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
+              activeView === 'revaluation'
+                ? 'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20'
+                : 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30'
+            }`}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Apply Revaluation (RV/RC)</span>
+          </button>
+
+          {/* Marks Clarification Action Pill */}
+          <button
+            onClick={() => setActiveView('clarification')}
+            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
+              activeView === 'clarification'
+                ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30'
+                : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
+            }`}
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+            <span>Clarify Marks (Why Less?)</span>
+          </button>
+
           <button
             onClick={() => setActiveView('search')}
             className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
               activeView === 'search'
-                ? 'bg-blue-600 text-white font-bold'
+                ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30'
                 : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
             }`}
           >
@@ -77,7 +113,7 @@ const StudentWelcomeBanner: React.FC = () => {
             onClick={() => setActiveView('directory')}
             className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
               activeView === 'directory'
-                ? 'bg-blue-600 text-white font-bold'
+                ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30'
                 : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
             }`}
           >
@@ -89,11 +125,11 @@ const StudentWelcomeBanner: React.FC = () => {
             onClick={() => setActiveView('analytics')}
             className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
               activeView === 'analytics'
-                ? 'bg-blue-600 text-white font-bold'
+                ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30'
                 : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
             }`}
           >
-            <Award className="w-3.5 h-3.5" />
+            <Award className="w-3.5 h-3.5 text-amber-400" />
             <span>Toppers</span>
           </button>
         </div>
@@ -109,6 +145,8 @@ const MainContent: React.FC = () => {
     <main className="flex-1">
       {activeView === 'search' && <ResultSearch />}
       {activeView === 'marksheet' && <MarksheetView />}
+      {activeView === 'revaluation' && <RevaluationPortal />}
+      {activeView === 'clarification' && <MarksDoubtClarification />}
       {activeView === 'admin' && <AdminDashboard />}
       {activeView === 'directory' && <StudentDirectory />}
       {activeView === 'analytics' && <AnalyticsView />}
@@ -145,4 +183,3 @@ export function App() {
 }
 
 export default App;
-

@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Student, SemesterResult } from '../types/student';
-import { INITIAL_STUDENTS, INSTITUTION_INFO } from '../data/mockAcademicData';
+import { Student, SemesterResult, RevaluationApplication, MarksDoubtTicket } from '../types/student';
+import { 
+  INITIAL_STUDENTS, 
+  INSTITUTION_INFO, 
+  REVALUATION_POLICY,
+  INITIAL_REVAL_APPLICATIONS, 
+  INITIAL_DOUBT_TICKETS 
+} from '../data/mockAcademicData';
 
 export interface UserSession {
   id?: string;
@@ -13,6 +19,16 @@ export interface UserSession {
   avatarUrl?: string;
   overallCgpa?: number;
 }
+
+export type ActiveAppView = 
+  | 'search' 
+  | 'marksheet' 
+  | 'admin' 
+  | 'directory' 
+  | 'analytics' 
+  | 'revaluation' 
+  | 'clarification' 
+  | 'evaluation-rules';
 
 interface StudentContextType {
   students: Student[];
@@ -31,8 +47,8 @@ interface StudentContextType {
   resetToDefaultData: () => void;
   exportToJSON: () => void;
   exportResultsCSV: () => void;
-  activeView: 'search' | 'marksheet' | 'admin' | 'directory' | 'analytics';
-  setActiveView: (view: 'search' | 'marksheet' | 'admin' | 'directory' | 'analytics') => void;
+  activeView: ActiveAppView;
+  setActiveView: (view: ActiveAppView) => void;
   isAdminLoggedIn: boolean;
   setIsAdminLoggedIn: (logged: boolean) => void;
   // Auth state
@@ -42,10 +58,32 @@ interface StudentContextType {
   logout: () => void;
   quickLoginAsStudent: (rollNumber: string) => void;
   quickLoginAsAdmin: () => void;
+  // Revaluation & Clarification
+  revalApplications: RevaluationApplication[];
+  doubtTickets: MarksDoubtTicket[];
+  revalPolicy: typeof REVALUATION_POLICY;
+  submitRevaluation: (appData: Omit<RevaluationApplication, 'id' | 'receiptNumber' | 'appliedDate' | 'expectedResultDate'>) => RevaluationApplication;
+  submitDoubtTicket: (doubtData: {
+    rollNumber: string;
+    studentName: string;
+    subjectCode: string;
+    subjectName: string;
+    doubtCategory: MarksDoubtTicket['doubtCategory'];
+    question: string;
+    studentRemarks: string;
+  }) => MarksDoubtTicket;
+  selectedSubjectForReval: string | null;
+  setSelectedSubjectForReval: (code: string | null) => void;
+  openRevalForSubject: (code: string) => void;
+  selectedSubjectForClarification: string | null;
+  setSelectedSubjectForClarification: (code: string | null) => void;
+  openClarificationForSubject: (code: string) => void;
 }
 
 const STORAGE_KEY = 'nsrit_student_management_v2';
 const AUTH_STORAGE_KEY = 'nsrit_auth_session_v1';
+const REVAL_STORAGE_KEY = 'nsrit_reval_applications_v1';
+const DOUBT_STORAGE_KEY = 'nsrit_doubt_tickets_v1';
 
 const StudentContext = createContext<StudentContextType | undefined>(undefined);
 
@@ -66,8 +104,160 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [searchRollNumber, setSearchRollNumber] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [selectedSemester, setSelectedSemester] = useState<SemesterResult | null>(null);
-  const [activeView, setActiveView] = useState<'search' | 'marksheet' | 'admin' | 'directory' | 'analytics'>('search');
+  const [activeView, setActiveView] = useState<ActiveAppView>('search');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  // Revaluation Applications state
+  const [revalApplications, setRevalApplications] = useState<RevaluationApplication[]>(() => {
+    try {
+      const saved = localStorage.getItem(REVAL_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return INITIAL_REVAL_APPLICATIONS;
+  });
+
+  // Marks Doubt Tickets state
+  const [doubtTickets, setDoubtTickets] = useState<MarksDoubtTicket[]>(() => {
+    try {
+      const saved = localStorage.getItem(DOUBT_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return INITIAL_DOUBT_TICKETS;
+  });
+
+  // Subject quick targeting state
+  const [selectedSubjectForReval, setSelectedSubjectForReval] = useState<string | null>(null);
+  const [selectedSubjectForClarification, setSelectedSubjectForClarification] = useState<string | null>(null);
+
+  // Persist Reval applications
+  useEffect(() => {
+    try {
+      localStorage.setItem(REVAL_STORAGE_KEY, JSON.stringify(revalApplications));
+    } catch {}
+  }, [revalApplications]);
+
+  // Persist Doubt tickets
+  useEffect(() => {
+    try {
+      localStorage.setItem(DOUBT_STORAGE_KEY, JSON.stringify(doubtTickets));
+    } catch {}
+  }, [doubtTickets]);
+
+  const submitRevaluation = (appData: Omit<RevaluationApplication, 'id' | 'receiptNumber' | 'appliedDate' | 'expectedResultDate'>) => {
+    const newId = `RV-2026-NSRIT-${Math.floor(10000 + Math.random() * 90000)}`;
+    const newReceipt = `REC-NSRIT-RV-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newApp: RevaluationApplication = {
+      ...appData,
+      id: newId,
+      receiptNumber: newReceipt,
+      appliedDate: new Date().toISOString().slice(0, 10),
+      expectedResultDate: REVALUATION_POLICY.expectedResultDate,
+    };
+    setRevalApplications((prev) => [newApp, ...prev]);
+    return newApp;
+  };
+
+  const submitDoubtTicket = (data: {
+    rollNumber: string;
+    studentName: string;
+    subjectCode: string;
+    subjectName: string;
+    doubtCategory: MarksDoubtTicket['doubtCategory'];
+    question: string;
+    studentRemarks: string;
+  }) => {
+    const ticketId = `DOUBT-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newTicket: MarksDoubtTicket = {
+      id: ticketId,
+      ...data,
+      status: 'Clarified',
+      createdAt: 'Just now',
+      clarifiedAt: 'Just now',
+      evaluatorResponse: {
+        officialRemarks: `Examination Valuation Cell verified answer script for ${data.subjectCode} (${data.subjectName}). External descriptive valuation was cross-audited against the official autonomous scheme. Your query regarding "${data.question}" was evaluated by the Department Head & Senior Subject Committee.`,
+        evaluatorName: 'Dr. K. Srinivas Rao, Ph.D',
+        designation: 'Chief Examiner & Associate Professor, Autonomous Valuation Center',
+        recommendedAction: 'Apply Revaluation (Eligible for Score Boost)',
+        questionWiseBreakdown: [
+          {
+            questionId: 'Part-A: Q1 (Compulsory Short Answers)',
+            unitName: 'All Units (10 Questions x 2 Marks)',
+            maxMarks: 20,
+            awardedMarks: 18,
+            keyPointsCovered: 'Foundational concepts, formulas, and terminology',
+            evaluatorRemarks: '9/10 definitions accurate and concise. Minor deduction in Q1(e).',
+            canChallenge: false,
+          },
+          {
+            questionId: 'Part-B: Q2 (Unit 1)',
+            unitName: 'Descriptive Question 1',
+            maxMarks: 10,
+            awardedMarks: 8,
+            keyPointsCovered: 'System design derivation & diagrams',
+            evaluatorRemarks: 'Well structured block diagram. Awarded 8/10 as per key.',
+            canChallenge: false,
+          },
+          {
+            questionId: 'Part-B: Q3 (Unit 2)',
+            unitName: 'Descriptive Question 2',
+            maxMarks: 10,
+            awardedMarks: 6,
+            keyPointsCovered: 'Comparative analysis and mathematical proof',
+            evaluatorRemarks: 'Derivation steps present, but lacked sample numerical proof (-4 marks). Strongly eligible for reconsideration in Revaluation.',
+            canChallenge: true,
+          },
+          {
+            questionId: 'Part-B: Q4 (Unit 3)',
+            unitName: 'Descriptive Question 3',
+            maxMarks: 10,
+            awardedMarks: 9,
+            keyPointsCovered: 'Algorithm pseudocode and complexity analysis',
+            evaluatorRemarks: 'Accurate time and space complexity analysis.',
+            canChallenge: false,
+          },
+          {
+            questionId: 'Part-B: Q5 (Unit 4)',
+            unitName: 'Descriptive Question 4',
+            maxMarks: 10,
+            awardedMarks: 7,
+            keyPointsCovered: 'Real-time implementation case study',
+            evaluatorRemarks: 'Good theoretical principles. Omitted secondary edge cases.',
+            canChallenge: false,
+          },
+        ],
+        internalBreakdown: {
+          mid1Objective: 9,
+          mid1Descriptive: 14,
+          mid1Total: 23,
+          mid2Objective: 10,
+          mid2Descriptive: 15,
+          mid2Total: 25,
+          internalMidCalculated: 24.6,
+          assignmentMarks: 5,
+          attendanceMarks: 4.5,
+          finalInternalMarks: 25,
+        }
+      }
+    };
+    setDoubtTickets((prev) => [newTicket, ...prev]);
+    return newTicket;
+  };
+
+  const openRevalForSubject = (code: string) => {
+    setSelectedSubjectForReval(code);
+    setActiveView('revaluation');
+  };
+
+  const openClarificationForSubject = (code: string) => {
+    setSelectedSubjectForClarification(code);
+    setActiveView('clarification');
+  };
   
   // Auth state: Initially false so FIRST PAGE is always the Student Login page!
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -373,6 +563,17 @@ export const StudentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         logout,
         quickLoginAsStudent,
         quickLoginAsAdmin,
+        revalApplications,
+        doubtTickets,
+        revalPolicy: REVALUATION_POLICY,
+        submitRevaluation,
+        submitDoubtTicket,
+        selectedSubjectForReval,
+        setSelectedSubjectForReval,
+        openRevalForSubject,
+        selectedSubjectForClarification,
+        setSelectedSubjectForClarification,
+        openClarificationForSubject,
       }}
     >
       {children}

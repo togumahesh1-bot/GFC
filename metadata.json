@@ -1,6 +1,6 @@
 {
-  "name": "Gangamma Fast Food",
-  "description": "Student Result Management System & Examination Portal with Hall Ticket Lookup, Digital Marksheet, SGPA/CGPA Calculation, Student Directory, and Faculty Admin Marks Entry.",
+  "name": "NSRIT Student Results & Revaluation Portal",
+  "description": "NSRIT Autonomous Examination & Student Results Portal with Marks Clarification, Revaluation (RV/RC), Question Rubric Breakdown, Digital Marksheets, and SGPA/CGPA Analytics.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

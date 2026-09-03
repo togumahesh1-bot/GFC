@@ -350,3 +350,232 @@ export const INITIAL_STUDENTS: Student[] = [
     ],
   }
 ];
+
+export const REVALUATION_POLICY = {
+  status: 'ACTIVE' as const,
+  currentSemesterSession: 'Nov/Dec 2025 Autonomous Examinations (R20 / R22 Regulations)',
+  resultDeclaredDate: '2026-01-15',
+  startDate: '2026-01-16',
+  lastDateWithoutFine: '2026-01-28',
+  lastDateWithFine: '2026-02-04',
+  expectedResultDate: '2026-02-18',
+  lateFee: 500,
+  fees: {
+    recounting: 200,
+    revaluation: 1000,
+    photocopy: 1500,
+    challenge: 2500,
+  },
+  guidelines: [
+    {
+      title: 'When to Apply?',
+      description: 'The Revaluation portal opens the day after results are announced and remains active for 14 calendar days. Currently open for all Nov/Dec 2025 examination results until February 04, 2026.',
+    },
+    {
+      title: 'Recounting vs Revaluation',
+      description: 'Recounting (₹200/subject) ensures all attempted answers were marked and checks for summation errors. Revaluation (₹1,000/subject) is a complete blind second re-evaluation by an independent external evaluator.',
+    },
+    {
+      title: 'The 15% Mark Improvement Rule',
+      description: 'Under UGC Autonomous & JNTU-GV regulations, if the revaluation score differs by ≥ 15% of max external marks (or results in a higher grade), the improved marks will supersede the original marks in the final marks memo.',
+    },
+    {
+      title: 'Answer Script Photocopy & Challenge Valuation',
+      description: 'Students can request a watermarked PDF copy of their evaluated answer script (₹1,500). If discrepancies are observed, students can challenge before the Examination Academic Committee (₹2,500). If marks improve by ≥15%, 50% fee is refunded.',
+    },
+    {
+      title: 'Zero-Doubt Marks Clarification Cell',
+      description: 'Before spending money on revaluation, students can submit an online Marks Doubt Ticket to view the question-by-question scoring rubric, evaluator commentary, and internal mid-term formula breakdown.',
+    }
+  ],
+};
+
+export const INITIAL_REVAL_APPLICATIONS = [
+  {
+    id: 'RV-2026-NSRIT-09843',
+    rollNumber: '21A91A0503',
+    studentName: 'Mahesh Togu',
+    branch: 'Computer Science & Engineering',
+    semesterNumber: 7,
+    semesterName: 'IV Year I Semester (R20)',
+    subjects: [
+      {
+        subjectCode: 'CS704OE',
+        subjectName: 'Cyber Security, Forensics & Cryptography',
+        serviceType: 'revaluation' as const,
+        originalInternal: 24,
+        originalExternal: 52,
+        originalTotal: 76,
+        originalGrade: 'A',
+        fee: 1000,
+        reason: 'Attempted all descriptive questions in Part B with complete cryptographic proofs. Expected 62+ in external theory.',
+        status: 'Evaluator Assigned' as const,
+        revisedExternal: 61,
+        revisedTotal: 85,
+        revisedGrade: 'A+',
+        evaluatorRemarks: 'Script reassessed by Senior Faculty, External Center. Extra 9 marks credited for RSA Key exchange explanation in Question 4(b).',
+      },
+    ],
+    totalFee: 1000,
+    paymentStatus: 'PAID' as const,
+    paymentMode: 'Online UPI' as const,
+    transactionRef: 'UPI/NSRIT/2026/99382109',
+    appliedDate: '2026-01-20',
+    expectedResultDate: '2026-02-18',
+    receiptNumber: 'REC-NSRIT-RV-04812',
+  },
+  {
+    id: 'RV-2026-NSRIT-09110',
+    rollNumber: '21A91A0301',
+    studentName: 'Ravi Teja G.',
+    branch: 'Mechanical Engineering',
+    semesterNumber: 7,
+    semesterName: 'IV Year I Semester (R20)',
+    subjects: [
+      {
+        subjectCode: 'ME702PC',
+        subjectName: 'Operations Research',
+        serviceType: 'recounting' as const,
+        originalInternal: 24,
+        originalExternal: 45,
+        originalTotal: 69,
+        originalGrade: 'B+',
+        fee: 200,
+        reason: 'Checking simplex tableau marks summation.',
+        status: 'Marks Updated' as const,
+        revisedExternal: 49,
+        revisedTotal: 73,
+        revisedGrade: 'A',
+        evaluatorRemarks: 'Totalling discrepancy verified. Question 5(c) 4 marks omitted from front table; corrected.',
+      },
+    ],
+    totalFee: 200,
+    paymentStatus: 'PAID' as const,
+    paymentMode: 'Online UPI' as const,
+    transactionRef: 'UPI/NSRIT/2026/88412933',
+    appliedDate: '2026-01-18',
+    expectedResultDate: '2026-02-18',
+    receiptNumber: 'REC-NSRIT-RC-04791',
+  }
+];
+
+export const INITIAL_DOUBT_TICKETS = [
+  {
+    id: 'DOUBT-9843-1',
+    rollNumber: '21A91A0503',
+    studentName: 'Mahesh Togu',
+    subjectCode: 'CS704OE',
+    subjectName: 'Cyber Security, Forensics & Cryptography',
+    doubtCategory: 'External Evaluation' as const,
+    question: 'Why did I receive only 52 in External Marks? I completed all 5 questions in Part-B with full steps and diagrams.',
+    studentRemarks: 'I felt Question 4 on Asymmetric Key Cryptography and Question 2 on SHA-512 hashing were fully correct according to standard textbooks. Please clarify where marks were deducted.',
+    status: 'Clarified' as const,
+    createdAt: '2026-01-18 11:30 AM',
+    clarifiedAt: '2026-01-19 03:15 PM',
+    evaluatorResponse: {
+      officialRemarks: 'Dear Mahesh, your answer book (Bundle Code #CSE-704-B14) was reviewed by the Subject Evaluation Board. Part-A scored 18/20. In Part-B, Question 4(b) lacked the modular arithmetic step proof for RSA key generation (-4 marks). However, your explanation of SHA-512 in Question 2 was rigorous and an extra 4 marks should have been awarded. You are strongly advised to apply for official Revaluation.',
+      evaluatorName: 'Dr. K. Srinivas Rao, Ph.D',
+      designation: 'Chief Examiner & Associate Professor, Dept. of CSE',
+      recommendedAction: 'Apply Revaluation (Eligible for Score Boost)' as const,
+      questionWiseBreakdown: [
+        {
+          questionId: 'Part-A: Q1 (Compulsory Short Answers)',
+          unitName: 'All Units (10 Questions x 2 Marks)',
+          maxMarks: 20,
+          awardedMarks: 18,
+          keyPointsCovered: 'Definitions of CIA Triad, Rainbow tables, Digital Signatures, Block ciphers.',
+          evaluatorRemarks: '9 out of 10 answers fully correct. 2 marks lost in Q1(h) buffer overflow attack defense definition.',
+          canChallenge: false,
+        },
+        {
+          questionId: 'Part-B: Q2 (Unit 1)',
+          unitName: 'Cryptographic Hash Functions & SHA',
+          maxMarks: 10,
+          awardedMarks: 8,
+          keyPointsCovered: 'SHA-512 compression function rounds, 80 iterations, message digest padding.',
+          evaluatorRemarks: 'Well structured block diagram. Evaluation was slightly conservative, candidate deserved 9/10.',
+          canChallenge: true,
+        },
+        {
+          questionId: 'Part-B: Q3 (Unit 2)',
+          unitName: 'Symmetric Encryption & AES',
+          maxMarks: 10,
+          awardedMarks: 9,
+          keyPointsCovered: 'SubBytes, ShiftRows, MixColumns, AddRoundKey matrix transformations.',
+          evaluatorRemarks: 'Accurate state array diagrams and key expansion schedule explanation.',
+          canChallenge: false,
+        },
+        {
+          questionId: 'Part-B: Q4 (Unit 3)',
+          unitName: 'Public Key Infrastructure & RSA Algorithm',
+          maxMarks: 10,
+          awardedMarks: 6,
+          keyPointsCovered: 'Euler Totient function phi(n), encryption and decryption formulas.',
+          evaluatorRemarks: 'Candidate wrote the algorithm but omitted numerical sample problem walkthrough (-4 marks). Eligible for reconsideration in revaluation.',
+          canChallenge: true,
+        },
+        {
+          questionId: 'Part-B: Q5 (Unit 4)',
+          unitName: 'Digital Forensics & Evidence Gathering',
+          maxMarks: 10,
+          awardedMarks: 7,
+          keyPointsCovered: 'Chain of custody, volatile memory acquisition, disk imaging.',
+          evaluatorRemarks: 'Good theoretical points. Legal admissibility standards only briefly mentioned (-3 marks).',
+          canChallenge: false,
+        },
+        {
+          questionId: 'Part-B: Q6 (Unit 5)',
+          unitName: 'Network Forensics & Firewalls',
+          maxMarks: 10,
+          awardedMarks: 4,
+          keyPointsCovered: 'Packet sniffing with Wireshark, IDS vs IPS comparison.',
+          evaluatorRemarks: 'Incomplete stateful packet inspection flowchart (-6 marks).',
+          canChallenge: false,
+        },
+      ],
+      internalBreakdown: {
+        mid1Objective: 9,
+        mid1Descriptive: 14,
+        mid1Total: 23,
+        mid2Objective: 10,
+        mid2Descriptive: 15,
+        mid2Total: 25,
+        internalMidCalculated: 24.6, // 80% of 25 (20) + 20% of 23 (4.6)
+        assignmentMarks: 5,
+        attendanceMarks: 4.5,
+        finalInternalMarks: 24, // Scaled and rounded as per autonomous regulation
+      }
+    }
+  },
+  {
+    id: 'DOUBT-9843-2',
+    rollNumber: '21A91A0503',
+    studentName: 'Mahesh Togu',
+    subjectCode: 'CS702PC',
+    subjectName: 'Machine Learning & Deep Neural Nets',
+    doubtCategory: 'Internal / Mid Calculation' as const,
+    question: 'How was my internal mark 25 calculated? I had 92% attendance and submitted both assignments on time.',
+    studentRemarks: 'I scored 26/30 in Mid-1 and 28/30 in Mid-2. Want to understand how 25 was finalized.',
+    status: 'Clarified' as const,
+    createdAt: '2026-01-17 02:20 PM',
+    clarifiedAt: '2026-01-17 05:40 PM',
+    evaluatorResponse: {
+      officialRemarks: 'Dear student, your Mid exam marks follow the R20 Autonomous formula: Weighted Mid = 0.80 x Best Mid + 0.20 x Second Mid. Best Mid (Mid-2) = 28 * 0.80 = 22.4. Second Mid (Mid-1) = 26 * 0.20 = 5.2. Total Mid Component = 27.6 / 30. Normalized to 20 marks = 18.4. Assignment = 4/5. Attendance (92%) = 4.5/5. Total = 26.9 rounded to 27, but deduction of 2 marks occurred due to late lab assignment submission in Unit 3, finalizing at 25.',
+      evaluatorName: 'Prof. V. Ramanjaneyulu, M.Tech',
+      designation: 'Course Coordinator, Machine Learning & Deep Learning',
+      recommendedAction: 'Evaluation is accurate according to JNTU-GV Key' as const,
+      internalBreakdown: {
+        mid1Objective: 9,
+        mid1Descriptive: 13,
+        mid1Total: 26,
+        mid2Objective: 10,
+        mid2Descriptive: 14,
+        mid2Total: 28,
+        internalMidCalculated: 27.6,
+        assignmentMarks: 4,
+        attendanceMarks: 4.5,
+        finalInternalMarks: 25,
+      }
+    }
+  }
+];

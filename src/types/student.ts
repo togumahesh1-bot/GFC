@@ -71,3 +71,84 @@ export interface SystemStats {
   averageCgpa: number;
   highestCgpa: number;
 }
+
+export type RevalServiceType = 'revaluation' | 'recounting' | 'photocopy' | 'challenge';
+
+export interface RevaluationSubjectItem {
+  subjectCode: string;
+  subjectName: string;
+  serviceType: RevalServiceType;
+  originalInternal: number;
+  originalExternal: number;
+  originalTotal: number;
+  originalGrade: string;
+  fee: number;
+  reason?: string;
+  status: 'Applied' | 'Under Review' | 'Evaluator Assigned' | 'Scored' | 'Marks Updated' | 'No Change';
+  revisedExternal?: number;
+  revisedTotal?: number;
+  revisedGrade?: string;
+  evaluatorRemarks?: string;
+}
+
+export interface RevaluationApplication {
+  id: string; // e.g. "RV-2026-NSRIT-09841"
+  rollNumber: string;
+  studentName: string;
+  branch: string;
+  semesterNumber: number;
+  semesterName: string;
+  subjects: RevaluationSubjectItem[];
+  totalFee: number;
+  paymentStatus: 'PAID' | 'PENDING';
+  paymentMode: 'Online UPI' | 'Net Banking' | 'Exam Cell Challan';
+  transactionRef: string;
+  appliedDate: string;
+  expectedResultDate: string;
+  receiptNumber: string;
+}
+
+export interface QuestionBreakdown {
+  questionId: string; // e.g. "Part-A Q1(a)"
+  unitName: string;
+  maxMarks: number;
+  awardedMarks: number;
+  keyPointsCovered: string;
+  evaluatorRemarks: string;
+  canChallenge: boolean;
+}
+
+export interface InternalEvaluationBreakdown {
+  mid1Objective: number; // out of 10
+  mid1Descriptive: number; // out of 15
+  mid1Total: number; // out of 25 (scaled to 30)
+  mid2Objective: number;
+  mid2Descriptive: number;
+  mid2Total: number;
+  internalMidCalculated: number; // Best 80% + Worst 20% = 24
+  assignmentMarks: number; // out of 5
+  attendanceMarks: number; // out of 5
+  finalInternalMarks: number; // out of 30
+}
+
+export interface MarksDoubtTicket {
+  id: string; // e.g. "DOUBT-9821"
+  rollNumber: string;
+  studentName: string;
+  subjectCode: string;
+  subjectName: string;
+  doubtCategory: 'External Evaluation' | 'Internal / Mid Calculation' | 'Totalling Discrepancy' | 'Step-Marking' | 'Answer Script Request';
+  question: string;
+  studentRemarks: string;
+  status: 'Clarified' | 'Under Review' | 'Resolution Provided';
+  createdAt: string;
+  clarifiedAt?: string;
+  evaluatorResponse: {
+    officialRemarks: string;
+    evaluatorName: string;
+    designation: string;
+    questionWiseBreakdown?: QuestionBreakdown[];
+    internalBreakdown?: InternalEvaluationBreakdown;
+    recommendedAction: 'Apply Revaluation (Eligible for Score Boost)' | 'Re-totalling only' | 'Evaluation is accurate according to JNTU-GV Key' | 'Meet Grievance Committee';
+  };
+}
