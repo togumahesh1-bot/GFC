@@ -1,186 +1,148 @@
-import React, { useState, useEffect } from 'react';
-import { ToastProvider } from './context/ToastContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { CartProvider, useCart } from './context/CartContext';
-import { Navbar } from './components/common/Navbar';
-import { Footer } from './components/common/Footer';
-import { FloatingWhatsApp } from './components/common/FloatingWhatsApp';
-import { PolicyModal } from './components/common/PolicyModal';
-import { AuthModal } from './components/customer/AuthModal';
-import { CartDrawer } from './components/cart/CartDrawer';
-import { OffersModal } from './components/offers/OffersModal';
-import { FoodDetailsModal } from './components/menu/FoodDetailsModal';
-import { HomePage } from './components/home/HomePage';
-import { MenuPage } from './components/menu/MenuPage';
-import { CheckoutPage } from './components/checkout/CheckoutPage';
-import { OrderTrackingPage } from './components/tracking/OrderTrackingPage';
-import { CustomerDashboard } from './components/customer/CustomerDashboard';
+import React from 'react';
+import { StudentProvider, useStudents } from './context/StudentContext';
+import { Header } from './components/common/Header';
+import { LoginPage } from './components/auth/LoginPage';
+import { ResultSearch } from './components/result/ResultSearch';
+import { MarksheetView } from './components/result/MarksheetView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
-import { FoodItem, FoodCategory, Order } from './types';
+import { StudentDirectory } from './components/directory/StudentDirectory';
+import { AnalyticsView } from './components/analytics/AnalyticsView';
+import { AcademicFooter } from './components/common/AcademicFooter';
+import { AcademicWhatsApp } from './components/common/AcademicWhatsApp';
+import { FileText, Search, Users, Award, ShieldCheck } from 'lucide-react';
 
-type ActiveView = 'home' | 'menu' | 'checkout' | 'track' | 'profile' | 'admin';
-type PolicyType = 'privacy' | 'terms' | 'refund' | null;
-
-const MainContent: React.FC = () => {
-  const [currentView, setCurrentView] = useState<ActiveView>('home');
-  const [selectedCategory, setSelectedCategory] = useState<FoodCategory | 'All'>('All');
-  const [selectedFoodItem, setSelectedFoodItem] = useState<FoodItem | null>(null);
-  const [isOffersOpen, setIsOffersOpen] = useState(false);
-  const [activePolicy, setActivePolicy] = useState<PolicyType>(null);
-  const [trackedOrderId, setTrackedOrderId] = useState<string | null>(null);
-
-  const { setIsAuthModalOpen, currentUser } = useAuth();
-  const { setIsCartOpen } = useCart();
-
-  // Scroll to top on view change
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentView]);
-
-  const handleNavigateToMenu = (category?: FoodCategory) => {
-    if (category) {
-      setSelectedCategory(category);
-    } else {
-      setSelectedCategory('All');
-    }
-    setCurrentView('menu');
-  };
-
-  const handleTrackOrder = (orderId: string) => {
-    setTrackedOrderId(orderId);
-    setCurrentView('track');
-  };
-
-  const handleOrderSuccess = (order: Order) => {
-    setTrackedOrderId(order.orderNumber);
-    setCurrentView('track');
-  };
+const StudentWelcomeBanner: React.FC = () => {
+  const { currentUser, activeView, setActiveView } = useStudents();
+  if (!currentUser) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0b0c10] text-zinc-100 font-sans selection:bg-amber-500 selection:text-black">
-      {/* Top Main Navigation Bar */}
-      <Navbar
-        currentView={currentView}
-        onNavigate={setCurrentView}
-        onOpenOffers={() => setIsOffersOpen(true)}
-      />
-
-      {/* Main View Display */}
-      <main className="flex-1 pb-20 md:pb-8">
-        {currentView === 'home' && (
-          <HomePage
-            onNavigateToMenu={handleNavigateToMenu}
-            onSelectItem={setSelectedFoodItem}
-            onOpenOffers={() => setIsOffersOpen(true)}
-          />
-        )}
-
-        {currentView === 'menu' && (
-          <MenuPage
-            initialCategory={selectedCategory}
-            onSelectItem={setSelectedFoodItem}
-          />
-        )}
-
-        {currentView === 'checkout' && (
-          <CheckoutPage
-            onBackToMenu={() => setCurrentView('menu')}
-            onOrderSuccess={handleOrderSuccess}
-          />
-        )}
-
-        {currentView === 'track' && (
-          <OrderTrackingPage
-            initialOrderId={trackedOrderId}
-            onNavigateToMenu={() => setCurrentView('menu')}
-          />
-        )}
-
-        {currentView === 'profile' && (
-          currentUser ? (
-            <CustomerDashboard
-              onNavigateToMenu={() => setCurrentView('menu')}
-              onTrackOrder={handleTrackOrder}
-              onSelectFoodItem={setSelectedFoodItem}
-            />
-          ) : (
-            <div className="max-w-md mx-auto px-4 py-24 text-center">
-              <div className="p-8 rounded-3xl bg-zinc-900 border border-zinc-800 shadow-2xl">
-                <h3 className="text-xl font-bold text-white mb-2 font-display">Sign In to View Profile</h3>
-                <p className="text-xs text-zinc-400 mb-6">
-                  Access your past food orders, earn loyalty reward points, and manage delivery addresses.
-                </p>
-                <button
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-sm transition-all"
-                >
-                  Sign In / Register
-                </button>
-              </div>
+    <div className="bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-[#0d1017] border-b border-zinc-800/80 px-4 py-3 print:hidden">
+      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 p-0.5 flex-shrink-0 shadow-md">
+            <div className="w-full h-full bg-[#0d1017] rounded-[10px] flex items-center justify-center font-bold text-amber-400 font-mono text-sm">
+              {currentUser.rollNumber ? currentUser.rollNumber.slice(-3) : 'ADM'}
             </div>
-          )
-        )}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-white">
+                {currentUser.fullName}
+              </span>
+              {currentUser.rollNumber && (
+                <span className="px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
+                  {currentUser.rollNumber}
+                </span>
+              )}
+              {currentUser.role === 'admin' && (
+                <span className="px-2 py-0.5 rounded-md bg-purple-500/15 border border-purple-500/30 text-purple-300 text-[10px] font-bold">
+                  Exam Cell Controller
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-zinc-400">
+              {currentUser.branch ? `B.Tech • ${currentUser.branch}` : 'Autonomous Examination & Results Portal'}
+              {currentUser.overallCgpa && ` • Cumulative CGPA: ${currentUser.overallCgpa}`}
+            </p>
+          </div>
+        </div>
 
-        {currentView === 'admin' && <AdminDashboard />}
-      </main>
+        {/* Quick Dashboard Action Pills */}
+        <div className="flex items-center gap-1.5 flex-wrap text-xs">
+          <button
+            onClick={() => setActiveView('marksheet')}
+            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
+              activeView === 'marksheet'
+                ? 'bg-amber-500 text-zinc-950 font-bold'
+                : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Marks Memo</span>
+          </button>
 
-      {/* Global Footer */}
-      <Footer
-        onNavigate={setCurrentView}
-        onOpenPolicy={(policy) => setActivePolicy(policy)}
-      />
+          <button
+            onClick={() => setActiveView('search')}
+            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
+              activeView === 'search'
+                ? 'bg-blue-600 text-white font-bold'
+                : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
+            }`}
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span>Search Result</span>
+          </button>
 
-      {/* Slide-over Cart Drawer */}
-      <CartDrawer
-        onProceedToCheckout={() => setCurrentView('checkout')}
-        onNavigateToMenu={() => setCurrentView('menu')}
-      />
+          <button
+            onClick={() => setActiveView('directory')}
+            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
+              activeView === 'directory'
+                ? 'bg-blue-600 text-white font-bold'
+                : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>Student Directory</span>
+          </button>
 
-      {/* Food Details & Customization Modal */}
-      <FoodDetailsModal
-        item={selectedFoodItem}
-        onClose={() => setSelectedFoodItem(null)}
-        onProceedToCheckout={() => {
-          setSelectedFoodItem(null);
-          setCurrentView('checkout');
-        }}
-      />
+          <button
+            onClick={() => setActiveView('analytics')}
+            className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition-all ${
+              activeView === 'analytics'
+                ? 'bg-blue-600 text-white font-bold'
+                : 'bg-zinc-800/70 hover:bg-zinc-800 text-zinc-200'
+            }`}
+          >
+            <Award className="w-3.5 h-3.5" />
+            <span>Toppers</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-      {/* Offers & Deals Modal */}
-      <OffersModal
-        isOpen={isOffersOpen}
-        onClose={() => setIsOffersOpen(false)}
-        onNavigateToMenu={() => {
-          setIsOffersOpen(false);
-          setCurrentView('menu');
-        }}
-      />
+const MainContent: React.FC = () => {
+  const { activeView } = useStudents();
 
-      {/* Auth Modal (Login / Signup / Forgot) */}
-      <AuthModal />
+  return (
+    <main className="flex-1">
+      {activeView === 'search' && <ResultSearch />}
+      {activeView === 'marksheet' && <MarksheetView />}
+      {activeView === 'admin' && <AdminDashboard />}
+      {activeView === 'directory' && <StudentDirectory />}
+      {activeView === 'analytics' && <AnalyticsView />}
+    </main>
+  );
+};
 
-      {/* Legal Policy Modal */}
-      <PolicyModal
-        type={activePolicy}
-        onClose={() => setActivePolicy(null)}
-      />
+const DashboardApp: React.FC = () => {
+  const { isAuthenticated } = useStudents();
 
-      {/* Floating WhatsApp Chat & Order Button */}
-      <FloatingWhatsApp />
+  // FIRST PAGE is the Student Login page:
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
+  // After clicking Login, open the EXISTING Student Management & Results Dashboard:
+  return (
+    <div className="min-h-screen flex flex-col bg-[#0b0c10] text-zinc-100 selection:bg-blue-600 selection:text-white font-sans antialiased">
+      <Header />
+      <StudentWelcomeBanner />
+      <MainContent />
+      <AcademicFooter />
+      <AcademicWhatsApp />
     </div>
   );
 };
 
 export function App() {
   return (
-    <ToastProvider>
-      <AuthProvider>
-        <CartProvider>
-          <MainContent />
-        </CartProvider>
-      </AuthProvider>
-    </ToastProvider>
+    <StudentProvider>
+      <DashboardApp />
+    </StudentProvider>
   );
 }
 
 export default App;
+
